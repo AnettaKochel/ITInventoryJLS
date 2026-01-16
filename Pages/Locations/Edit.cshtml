@@ -1,0 +1,50 @@
+@page "{id:int?}"
+@model ITInventoryJLS.Pages.Locations.EditModel
+@{
+    ViewData["Title"] = "Edit Location";
+}
+
+<h1>Edit Location</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Location.LocationId" />
+
+    <div class="mb-3">
+        <label asp-for="Location.LocationName" class="form-label"></label>
+        <input asp-for="Location.LocationName" class="form-control" />
+        <span asp-validation-for="Location.LocationName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Location.LocationAccountingID" class="form-label"></label>
+        <input asp-for="Location.LocationAccountingID" class="form-control" />
+        <span asp-validation-for="Location.LocationAccountingID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Location.StreetAddress" class="form-label"></label>
+        <input asp-for="Location.StreetAddress" class="form-control" />
+        <span asp-validation-for="Location.StreetAddress" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Location.CityStateZip" class="form-label"></label>
+        <input asp-for="Location.CityStateZip" class="form-control" />
+        <span asp-validation-for="Location.CityStateZip" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Location.FWIP" class="form-label"></label>
+        <input asp-for="Location.FWIP" class="form-control" />
+        <span asp-validation-for="Location.FWIP" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="/Locations/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

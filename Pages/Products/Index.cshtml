@@ -1,0 +1,54 @@
+@page
+@model ITInventoryJLS.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+
+<h1>Waps</h1>
+
+<a asp-page="/Products/Create" class="btn btn-primary mb-3">Add New</a>
+
+@if (Model.Waps.Count == 0)
+{
+    <p>No Waps found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>SerialNumber</th>
+                <th>Manufacturer</th>
+				<th>Model</th>
+                <th>Condition</th>
+                <th>DeploymentLocation</th>
+                <th>ReceivedDate</th>
+                <th>DeployedDate</th>
+                <th>EOL</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var wap in Model.Waps)
+        {
+            <tr>
+                <td>@wap.Id</td>
+                <td>@wap.SerialNumber</td>
+                <td>@wap.Manufacturer</td>
+				<td>@wap.Model</td>
+                <td>@wap.Condition</td>
+                <td>@wap.DeploymentLocation</td>
+                <td>@wap.ReceivedDate</td>
+                <td>@wap.DeployedDate</td>
+                <td>@wap.EOL</td>
+                <td>
+                    <a asp-page="/Products/Edit" asp-route-id="@wap.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-page="/Products/Delete" asp-route-id="@wap.Id" class="btn btn-sm btn-danger ms-2">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

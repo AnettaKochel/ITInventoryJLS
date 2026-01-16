@@ -1,0 +1,102 @@
+html {
+  font-size: 14px;
+  /* Page background: dark gray for a dark theme */
+  background-color: #2f2f2f;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  /* Use light text on dark background */
+  color: #ffffff;
+  background-color: transparent;
+}
+
+/* Ensure tables inherit the text color and get a subtle dark header */
+.table {
+  color: inherit;
+  background-color: transparent;
+}
+.table thead th {
+  background-color: rgba(255,255,255,0.04);
+  color: inherit;
+}
+.table tbody tr td {
+  background-color: transparent;
+}
+
+/* Audit table: ensure high-contrast readable text on dark backgrounds */
+.audit-table,
+.audit-table th,
+.audit-table td {
+  color: #ffffff !important;
+}
+.audit-table thead th {
+  background-color: rgba(255,255,255,0.06) !important;
+  color: #ffffff !important;
+}
+.audit-table tbody tr:nth-child(odd) {
+  background-color: rgba(255,255,255,0.02) !important;
+}
+.audit-table tbody tr:nth-child(even) {
+  background-color: rgba(255,255,255,0.04) !important;
+}
+.audit-table td {
+  word-break: break-word;
+  white-space: normal !important;
+}
+
+/* Links: lighter blue that stands out on dark background */
+a {
+  color: #79b8ff;
+}
+
+/* Buttons focus/active box-shadow tweak for dark background */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem rgba(255,255,255,0.25), 0 0 0 0.25rem #258cfb;
+}
+
+/* Navbar logo sizing (responsive) */
+.navbar-brand .navbar-logo {
+  max-height: 40px;
+  width: auto;
+  margin-right: 8px;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand .navbar-logo {
+    max-height: 28px;
+    margin-right: 6px;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-brand .navbar-logo {
+    max-height: 48px;
+    margin-right: 10px;
+  }
+}
+
+/* Ensure compact layout on very small screens */
+@media (max-width: 575.98px) {
+  .navbar-brand .navbar-logo {
+    margin-right: 0;
+  }
+  .navbar-brand .brand-text {
+    display: none; /* fallback if Bootstrap classes not present */
+  }
+}

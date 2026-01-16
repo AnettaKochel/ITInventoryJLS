@@ -1,0 +1,10 @@
+@page
+@model ITInventoryJLS.Pages.Account.LogoutModel
+
+<h2>Sign out</h2>
+
+<form method="post" asp-page="/Account/Logout">
+	@Html.AntiForgeryToken()
+	<p>Click the button to sign out.</p>
+	<button type="submit" class="btn btn-danger">Sign out</button>
+</form>

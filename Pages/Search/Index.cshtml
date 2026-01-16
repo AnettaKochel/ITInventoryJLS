@@ -1,0 +1,205 @@
+@page
+@model ITInventoryJLS.Pages.Search.IndexModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Global Search</h1>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input name="q" value="@Model.Query" class="form-control" placeholder="Search (alphanumeric)..." />
+        <button class="btn btn-primary" type="submit">Search</button>
+        <a asp-page="/Search/Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+@if (string.IsNullOrWhiteSpace(Model.Query))
+{
+    <!-- Helper text removed as requested -->
+}
+else
+{
+    <p>Found <strong>@Model.TotalResults</strong> result(s) for "@Model.Query".</p>
+
+    @if (Model.LocationResults.Any())
+    {
+        <h3>Locations (@Model.LocationResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>LocationName</th>
+                    <th>Accounting ID</th>
+                    <th>StreetAddress</th>
+                        <th>CityStateZip</th>
+                        <th>FWIP</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var l in Model.LocationResults)
+            {
+                <tr>
+                    <td>@l.LocationName</td>
+                    <td>@l.LocationAccountingID</td>
+                    <td>@l.StreetAddress</td>
+                        <td>@l.CityStateZip</td>
+                        <td>@l.FWIP</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.WapsResults.Any())
+    {
+        <h3>Waps (@Model.WapsResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>SerialNumber</th>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>DeploymentLocation</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var w in Model.WapsResults)
+            {
+                <tr>
+                    <td>@w.SerialNumber</td>
+                    <td>@w.Manufacturer</td>
+                    <td>@w.Model</td>
+                    <td>@w.DeploymentLocation</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.PhoneResults.Any())
+    {
+        <h3>Phones (@Model.PhoneResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>SerialNumber</th>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>Condition</th>
+                    <th>MACAddress</th>
+                    <th>DeploymentLocation</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var p in Model.PhoneResults)
+            {
+                <tr>
+                    <td>@p.SerialNumber</td>
+                    <td>@p.Manufacturer</td>
+                    <td>@p.Model</td>
+                    <td>@p.Condition</td>
+                    <td>@p.MACAddress</td>
+                    <td>@p.DeploymentLocation</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.EmployeeResults.Any())
+    {
+        <h3>Employees (@Model.EmployeeResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>FullName</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Department</th>
+                    <th>Title</th>
+                    <th>OfficeName</th>
+                    <th>State</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var e in Model.EmployeeResults)
+            {
+                <tr>
+                    <td>@e.FullName</td>
+                    <td>@e.FirstName</td>
+                    <td>@e.LastName</td>
+                    <td>@e.Department</td>
+                    <td>@e.Title</td>
+                    <td>@e.OfficeName</td>
+                    <td>@e.State</td>
+                    <td>@e.Email</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.ProductResults.Any())
+    {
+        <h3>Products (@Model.ProductResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var p in Model.ProductResults)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Price</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.ComputerResults.Any())
+    {
+        <h3>Computers (@Model.ComputerResults.Count)</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>DeviceName</th>
+                    <th>SerialNumber</th>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>DeploymentLocation</th>
+                    <th>PrimaryUser</th>
+                    <th>ManagedBy</th>
+                    <th>DeviceStatus</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var c in Model.ComputerResults)
+            {
+                <tr>
+                    <td>@c.DeviceName</td>
+                    <td>@c.SerialNumber</td>
+                    <td>@c.Manufacturer</td>
+                    <td>@c.Model</td>
+                    <td>@c.Type</td>
+                    <td>@c.DeploymentLocation</td>
+                    <td>@c.PrimaryUserDisplayName (@c.PrimaryUserEmailAddress)</td>
+                    <td>@c.ManagedBy</td>
+                    <td>@c.DeviceStatus</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (!Model.LocationResults.Any() && !Model.WapsResults.Any() && !Model.PhoneResults.Any() && !Model.ProductResults.Any() && !Model.EmployeeResults.Any() && !Model.ComputerResults.Any())
+    {
+        <p>No matches found.</p>
+    }
+}

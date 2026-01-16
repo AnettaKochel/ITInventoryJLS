@@ -1,0 +1,71 @@
+@page
+@model ITInventoryJLS.Pages.Products.CreateModel
+@{
+    ViewData["Title"] = "Add Wap";
+}
+
+<h1>Add Wap</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.SerialNumber" class="form-label"></label>
+        <input asp-for="Waps.SerialNumber" class="form-control" />
+        <span asp-validation-for="Waps.SerialNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.Manufacturer" class="form-label"></label>
+        <input asp-for="Waps.Manufacturer" class="form-control" />
+        <span asp-validation-for="Waps.Manufacturer" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.Model" class="form-label"></label>
+        <input asp-for="Waps.Model" class="form-control" />
+        <span asp-validation-for="Waps.Model" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.Condition" class="form-label"></label>
+        <input asp-for="Waps.Condition" class="form-control" />
+        <span asp-validation-for="Waps.Condition" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.DeploymentLocation" class="form-label"></label>
+        <select asp-for="Waps.DeploymentLocation" class="form-control" asp-items="Model.LocationOptions">
+            <option value="">-- Select location --</option>
+        </select>
+        <span asp-validation-for="Waps.DeploymentLocation" class="text-danger"></span>
+    </div>
+    <div class="mb-2">
+        <a asp-page="/Locations/Create" class="btn btn-link">Add location</a>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.ReceivedDate" class="form-label"></label>
+        <input asp-for="Waps.ReceivedDate" type="date" class="form-control" />
+        <span asp-validation-for="Waps.ReceivedDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.DeployedDate" class="form-label"></label>
+        <input asp-for="Waps.DeployedDate" type="date" class="form-control" />
+        <span asp-validation-for="Waps.DeployedDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Waps.EOL" class="form-label"></label>
+        <input asp-for="Waps.EOL" type="date" class="form-control" />
+        <span asp-validation-for="Waps.EOL" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="/Products/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

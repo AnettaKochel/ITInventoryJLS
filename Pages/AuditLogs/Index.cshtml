@@ -1,0 +1,61 @@
+@page
+@model ITInventoryJLS.Pages.AuditLogs.IndexModel
+@{
+    ViewData["Title"] = "Audit Logs";
+}
+
+<h1>Audit Logs</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input name="TableFilter" value="@Model.TableFilter" placeholder="Filter by table" class="form-control form-control-sm" />
+    </div>
+    <div class="col-auto">
+        <input name="PageSize" value="@Model.PageSize" type="number" min="1" max="200" class="form-control form-control-sm" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-sm btn-primary" type="submit">Apply</button>
+    </div>
+</form>
+
+<table class="table table-sm table-striped audit-table">
+    <thead>
+        <tr>
+            <th>When (PST)</th>
+            <th>Table</th>
+            <th>Action</th>
+            <th>Key</th>
+            <th>Old</th>
+            <th>New</th>
+            <th>By</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model.AuditLogs)
+    {
+        <tr>
+            <td>@(TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(a.ChangedAt, DateTimeKind.Utc), TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time")).ToString("yyyy-MM-dd HH:mm:ss"))</td>
+            <td>@a.TableName</td>
+            <td>@a.Action</td>
+            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@a.KeyValues</td>
+            <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@a.OldValues</td>
+            <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@a.NewValues</td>
+            <td>@a.ChangedBy</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <div>Showing page @Model.PageNumber of @Model.TotalPages (@Model.TotalCount records)</div>
+    <nav>
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+                <a class="page-link" href="?TableFilter=@Model.TableFilter&PageSize=@Model.PageSize&PageNumber=@(Model.PageNumber-1)">Previous</a>
+            </li>
+            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?TableFilter=@Model.TableFilter&PageSize=@Model.PageSize&PageNumber=@(Model.PageNumber+1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

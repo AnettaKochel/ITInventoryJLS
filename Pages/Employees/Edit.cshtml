@@ -1,0 +1,74 @@
+@page "{id:int?}"
+@model ITInventoryJLS.Pages.Employees.EditModel
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<h1>Edit Employee</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Employee.EmployeeID" />
+
+    <div class="mb-3">
+        <label asp-for="Employee.FullName" class="form-label"></label>
+        <input asp-for="Employee.FullName" class="form-control" />
+        <span asp-validation-for="Employee.FullName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.FirstName" class="form-label"></label>
+        <input asp-for="Employee.FirstName" class="form-control" />
+        <span asp-validation-for="Employee.FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.LastName" class="form-label"></label>
+        <input asp-for="Employee.LastName" class="form-control" />
+        <span asp-validation-for="Employee.LastName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.Department" class="form-label"></label>
+        <input asp-for="Employee.Department" class="form-control" />
+        <span asp-validation-for="Employee.Department" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.Title" class="form-label"></label>
+        <input asp-for="Employee.Title" class="form-control" />
+        <span asp-validation-for="Employee.Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.OfficeName" class="form-label"></label>
+        <input asp-for="Employee.OfficeName" class="form-control" />
+        <span asp-validation-for="Employee.OfficeName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.State" class="form-label"></label>
+        <input asp-for="Employee.State" class="form-control" />
+        <span asp-validation-for="Employee.State" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.Email" class="form-label"></label>
+        <input asp-for="Employee.Email" class="form-control" />
+        <span asp-validation-for="Employee.Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.EquipmentID" class="form-label"></label>
+        <input asp-for="Employee.EquipmentID" type="number" class="form-control" />
+        <span asp-validation-for="Employee.EquipmentID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="/Employees/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,51 @@
+@page
+@model ITInventoryJLS.Pages.Phones.IndexModel
+@{
+    ViewData["Title"] = "Phones";
+}
+
+<h1>Phones</h1>
+
+<a asp-page="/Phones/Create" class="btn btn-primary mb-3">Add New</a>
+
+@if (Model.Phones.Count == 0)
+{
+    <p>No phones found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>PhoneID</th>
+                <th>SerialNumber</th>
+                <th>Manufacturer</th>
+                <th>Model</th>
+                <th>Condition</th>
+                <th>MACAddress</th>
+                <th>DeploymentLocation</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var p in Model.Phones)
+        {
+            <tr>
+                <td>@p.PhoneID</td>
+                <td>@p.SerialNumber</td>
+                <td>@p.Manufacturer</td>
+                <td>@p.Model</td>
+                <td>@p.Condition</td>
+                <td>@p.MACAddress</td>
+                <td>@p.DeploymentLocation</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-page="/Phones/Edit" asp-route-id="@p.PhoneID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="/Phones/Delete" asp-route-id="@p.PhoneID" class="btn btn-sm btn-danger ms-2">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

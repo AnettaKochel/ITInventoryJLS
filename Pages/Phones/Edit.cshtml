@@ -1,0 +1,58 @@
+@page
+@model ITInventoryJLS.Pages.Phones.EditModel
+{
+    ViewData["Title"] = "Edit Phone";
+}
+
+<h1>Edit Phone</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Phone.PhoneID" />
+
+    <div class="mb-3">
+        <label class="form-label">Serial Number</label>
+        <input asp-for="Phone.SerialNumber" class="form-control" />
+        <span asp-validation-for="Phone.SerialNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Manufacturer</label>
+        <input asp-for="Phone.Manufacturer" class="form-control" />
+        <span asp-validation-for="Phone.Manufacturer" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Model</label>
+        <input asp-for="Phone.Model" class="form-control" />
+        <span asp-validation-for="Phone.Model" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Condition</label>
+        <input asp-for="Phone.Condition" class="form-control" />
+        <span asp-validation-for="Phone.Condition" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">MAC Address</label>
+        <input asp-for="Phone.MACAddress" class="form-control" />
+        <span asp-validation-for="Phone.MACAddress" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Deployment Location</label>
+        <select asp-for="Phone.DeploymentLocation" class="form-select">
+            <option value="">Select location</option>
+            @foreach (var loc in Model.LocationOptions)
+            {
+                <option value="@loc.Value" selected="@(Model.Phone.DeploymentLocation == loc.Value ? "selected" : null)">@loc.Text</option>
+            }
+        </select>
+        <span asp-validation-for="Phone.DeploymentLocation" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="/Phones/Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+<partial name="_ValidationScriptsPartial" />

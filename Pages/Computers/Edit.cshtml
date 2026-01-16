@@ -1,0 +1,120 @@
+@page "{id:int?}"
+@model ITInventoryJLS.Pages.Computers.EditModel
+@{
+    ViewData["Title"] = "Edit Computer";
+}
+
+<h1>Edit Computer</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Computer.DeviceID" />
+
+    <div class="mb-3">
+        <label asp-for="Computer.DeviceName" class="form-label"></label>
+        <input asp-for="Computer.DeviceName" class="form-control" />
+        <span asp-validation-for="Computer.DeviceName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.OSVersionNumber" class="form-label"></label>
+        <input asp-for="Computer.OSVersionNumber" class="form-control" />
+        <span asp-validation-for="Computer.OSVersionNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.OSVersion" class="form-label"></label>
+        <input asp-for="Computer.OSVersion" class="form-control" />
+        <span asp-validation-for="Computer.OSVersion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.SerialNumber" class="form-label"></label>
+        <input asp-for="Computer.SerialNumber" class="form-control" />
+        <span asp-validation-for="Computer.SerialNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.Manufacturer" class="form-label"></label>
+        <input asp-for="Computer.Manufacturer" class="form-control" />
+        <span asp-validation-for="Computer.Manufacturer" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.Model" class="form-label"></label>
+        <input asp-for="Computer.Model" class="form-control" />
+        <span asp-validation-for="Computer.Model" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.Type" class="form-label"></label>
+        <input asp-for="Computer.Type" class="form-control" />
+        <span asp-validation-for="Computer.Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.DeploymentLocation" class="form-label"></label>
+        <select asp-for="Computer.DeploymentLocation" class="form-control" asp-items="Model.LocationOptions">
+            <option value="">-- Select location --</option>
+        </select>
+        <span asp-validation-for="Computer.DeploymentLocation" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <a asp-page="/Locations/Create" class="btn btn-link">Add location</a>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.PrimaryUserEmailAddress" class="form-label"></label>
+        <select asp-for="Computer.PrimaryUserEmailAddress" class="form-control" asp-items="Model.EmployeeEmailOptions">
+            <option value="">-- Select primary user email --</option>
+        </select>
+        <span asp-validation-for="Computer.PrimaryUserEmailAddress" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.PrimaryUserDisplayName" class="form-label"></label>
+        <select asp-for="Computer.PrimaryUserDisplayName" class="form-control" asp-items="Model.EmployeeOptions">
+            <option value="">-- Select primary user --</option>
+        </select>
+        <span asp-validation-for="Computer.PrimaryUserDisplayName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.ManagedBy" class="form-label"></label>
+        <input asp-for="Computer.ManagedBy" class="form-control" />
+        <span asp-validation-for="Computer.ManagedBy" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.JoinType" class="form-label"></label>
+        <input asp-for="Computer.JoinType" class="form-control" />
+        <span asp-validation-for="Computer.JoinType" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.PurchasedDate" class="form-label"></label>
+        <input asp-for="Computer.PurchasedDate" type="date" class="form-control" />
+        <span asp-validation-for="Computer.PurchasedDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.DeployedDate" class="form-label"></label>
+        <input asp-for="Computer.DeployedDate" type="date" class="form-control" />
+        <span asp-validation-for="Computer.DeployedDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Computer.DeviceStatus" class="form-label"></label>
+        <input asp-for="Computer.DeviceStatus" class="form-control" />
+        <span asp-validation-for="Computer.DeviceStatus" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="/Computers/Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

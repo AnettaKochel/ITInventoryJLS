@@ -1,0 +1,67 @@
+@page
+@model ITInventoryJLS.Pages.Employees.IndexModel
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<h1>Employees</h1>
+
+<a asp-page="/Employees/Create" class="btn btn-primary mb-3">Add New</a>
+
+@if (Model.Employees.Count == 0)
+{
+    <p>No Employees found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>EmployeeID</th>
+                <th>
+                    <a asp-page="/Employees/Index" asp-route-sortOrder="@Model.FullNameSort">FullName</a>
+                    @if (string.IsNullOrEmpty(Model.CurrentSort) || Model.CurrentSort == "fullname")
+                    {
+                        <span class="badge bg-secondary">@Model.SortOrder</span>
+                    }
+                    else if (Model.CurrentSort == "fullname_desc")
+                    {
+                        <span class="badge bg-secondary">Z → A</span>
+                    }
+                </th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th><a asp-page="/Employees/Index" asp-route-sortOrder="@Model.DepartmentSort">Department</a></th>
+                <th><a asp-page="/Employees/Index" asp-route-sortOrder="@Model.TitleSort">Title</a></th>
+                <th><a asp-page="/Employees/Index" asp-route-sortOrder="@Model.OfficeNameSort">OfficeName</a></th>
+                <th>State</th>
+                <th>Email</th>
+                <th>EquipmentID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in Model.Employees)
+        {
+            <tr>
+                <td>@employee.EmployeeID</td>
+                <td>@employee.FullName</td>
+                <td>@employee.FirstName</td>
+                <td>@employee.LastName</td>
+                <td>@employee.Department</td>
+                <td>@employee.Title</td>
+                <td>@employee.OfficeName</td>
+                <td>@employee.State</td>
+                <td>@employee.Email</td>
+                <td>@employee.EquipmentID</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-page="/Employees/Edit" asp-route-id="@employee.EmployeeID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="/Employees/Delete" asp-route-id="@employee.EmployeeID" class="btn btn-sm btn-danger ms-2">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

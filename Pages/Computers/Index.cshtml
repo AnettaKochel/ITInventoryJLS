@@ -1,0 +1,137 @@
+@page
+@model ITInventoryJLS.Pages.Computers.IndexModel
+@{
+    ViewData["Title"] = "Computers";
+}
+
+<h1>Computers</h1>
+
+<form method="get" class="mb-3 row g-2 align-items-end">
+    <div class="col-auto">
+        <label class="form-label">Type</label>
+        <select name="TypeFilter" class="form-select">
+            <option value="">All</option>
+            @foreach (var t in Model.TypeOptions)
+            {
+                <option value="@t.Value" selected="@(Model.TypeFilter == t.Value ? "selected" : null)">@t.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">OS Version</label>
+        <select name="OSFilter" class="form-select">
+            <option value="">All</option>
+            @foreach (var o in Model.OSOptions)
+            {
+                <option value="@o.Value" selected="@(Model.OSFilter == o.Value ? "selected" : null)">@o.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Filter</button>
+        <a asp-page="/Computers/Index" class="btn btn-outline-secondary ms-2">Clear</a>
+    </div>
+</form>
+
+<a asp-page="/Computers/Create" class="btn btn-primary mb-3">Add New</a>
+
+<!-- Column visibility controls -->
+<div class="mb-3">
+    <label class="me-2">Columns:</label>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkOsVersionNumber" data-col="col-osvernum">
+        <label class="form-check-label" for="chkOsVersionNumber">OS Version #</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkEmail" data-col="col-email">
+        <label class="form-check-label" for="chkEmail">User Email</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkManagedBy" data-col="col-managedby">
+        <label class="form-check-label" for="chkManagedBy">Managed By</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkJoinType" data-col="col-join">
+        <label class="form-check-label" for="chkJoinType">Join Type</label>
+    </div>
+</div>
+
+@if (Model.Computers.Count == 0)
+{
+    <p>No Computers found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>DeviceID</th>
+                <th>DeviceName</th>
+                <th class="col-osvernum" style="display:none">OSVersionNumber</th>
+                <th>OSVersion</th>
+                <th>SerialNumber</th>
+                <th>Manufacturer</th>
+                <th>Model</th>
+                <th>Type</th>
+                <th>DeploymentLocation</th>
+                <th class="col-email" style="display:none">PrimaryUserEmailAddress</th>
+                <th>PrimaryUserDisplayName</th>
+                <th class="col-managedby" style="display:none">ManagedBy</th>
+                <th class="col-join" style="display:none">JoinType</th>
+                <th>PurchasedDate</th>
+                <th>DeployedDate</th>
+                <th>DeviceStatus</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model.Computers)
+        {
+            <tr>
+                <td>@c.DeviceID</td>
+                <td>@c.DeviceName</td>
+                <td class="col-osvernum" style="display:none">@c.OSVersionNumber</td>
+                <td>@c.OSVersion</td>
+                <td>@c.SerialNumber</td>
+                <td>@c.Manufacturer</td>
+                <td>@c.Model</td>
+                <td>@c.Type</td>
+                <td>@c.DeploymentLocation</td>
+                <td class="col-email" style="display:none">@c.PrimaryUserEmailAddress</td>
+                <td>@c.PrimaryUserDisplayName</td>
+                <td class="col-managedby" style="display:none">@c.ManagedBy</td>
+                <td class="col-join" style="display:none">@c.JoinType</td>
+                <td>@c.PurchasedDate</td>
+                <td>@c.DeployedDate</td>
+                <td>@c.DeviceStatus</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-page="/Computers/Edit" asp-route-id="@c.DeviceID" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="/Computers/Delete" asp-route-id="@c.DeviceID" class="btn btn-sm btn-danger ms-2">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<script>
+    (function(){
+        function setColumnVisible(className, visible){
+            document.querySelectorAll('.' + className).forEach(function(el){
+                el.style.display = visible ? '' : 'none';
+            });
+        }
+
+        document.querySelectorAll('input.form-check-input[data-col]').forEach(function(cb){
+            var col = cb.getAttribute('data-col');
+            // initialize (unchecked => hidden)
+            setColumnVisible(col, cb.checked);
+
+            cb.addEventListener('change', function(){
+                setColumnVisible(col, cb.checked);
+            });
+        });
+    })();
+</script>

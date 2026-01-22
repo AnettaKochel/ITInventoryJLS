@@ -26,7 +26,7 @@ Database and migrations
 - Always check `appsettings.json` for the `DefaultConnection` before running migrations.
 
 Security & risky code patterns
-- `Pages/SqlQuery/Index.cshtml.cs` executes raw SQL for SELECT statements via `DbConnection`. It contains explicit checks to only allow simple `SELECT` queries — do not relax these checks. See [Pages/SqlQuery/Index.cshtml.cs](Pages/SqlQuery/Index.cshtml.cs).
+- The project previously included an ad-hoc SQL query tool under `Pages/SqlQuery`. That tool has been removed — avoid adding similar functionality because it can enable data exfiltration and risks SQL injection. If a read-only query utility is required, gate it with `Admin` role, run it under least-privileged credentials, and thoroughly limit queries and results.
 
 Code changes guidance
 - Preserve Razor Pages structure: add a PageModel class co-located with its `.cshtml` file under `Pages/<Entity>/`.

@@ -65,24 +65,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Security headers: set a conservative baseline to reduce information leakage and clickjacking.
-app.Use(async (context, next) =>
-{
-    // Prevent MIME type sniffing
-    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-
-    // Prevent clickjacking
-    context.Response.Headers["X-Frame-Options"] = "DENY";
-
-    // Basic Referrer Policy
-    context.Response.Headers["Referrer-Policy"] = "no-referrer-when-downgrade";
-
-    // XSS protection (legacy browsers)
-    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-
-    await next();
-});
-
 // Middleware: set AppDbContext.CurrentUser from the authenticated user for each request
 app.Use(async (context, next) =>
 {

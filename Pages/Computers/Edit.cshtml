@@ -67,7 +67,7 @@
 
     <div class="mb-3">
         <label asp-for="Computer.PrimaryUserEmailAddress" class="form-label"></label>
-        <select asp-for="Computer.PrimaryUserEmailAddress" class="form-control" asp-items="Model.EmployeeEmailOptions">
+        <select id="primaryUserEmailSelect" asp-for="Computer.PrimaryUserEmailAddress" class="form-control" asp-items="Model.EmployeeEmailOptions">
             <option value="">-- Select primary user email --</option>
         </select>
         <span asp-validation-for="Computer.PrimaryUserEmailAddress" class="text-danger"></span>
@@ -75,7 +75,7 @@
 
     <div class="mb-3">
         <label asp-for="Computer.PrimaryUserDisplayName" class="form-label"></label>
-        <select asp-for="Computer.PrimaryUserDisplayName" class="form-control" asp-items="Model.EmployeeOptions">
+        <select id="primaryUserDisplaySelect" asp-for="Computer.PrimaryUserDisplayName" class="form-control" asp-items="Model.EmployeeOptions">
             <option value="">-- Select primary user --</option>
         </select>
         <span asp-validation-for="Computer.PrimaryUserDisplayName" class="text-danger"></span>
@@ -117,4 +117,39 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function() {
+            var employees = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EmployeePairs));
+            var emailSelect = document.getElementById('primaryUserEmailSelect');
+            var nameSelect = document.getElementById('primaryUserDisplaySelect');
+            if (!emailSelect || !nameSelect) return;
+
+            var mapEmailToName = {};
+            var mapNameToEmail = {};
+            employees.forEach(function(e) {
+                mapEmailToName[e.Email] = e.FullName;
+                mapNameToEmail[e.FullName] = e.Email;
+            });
+
+            emailSelect.addEventListener('change', function() {
+                var email = emailSelect.value || '';
+                if (!email) {
+                    nameSelect.value = '';
+                    return;
+                }
+                var name = mapEmailToName[email] || '';
+                nameSelect.value = name;
+            });
+
+            nameSelect.addEventListener('change', function() {
+                var name = nameSelect.value || '';
+                if (!name) {
+                    emailSelect.value = '';
+                    return;
+                }
+                var email = mapNameToEmail[name] || '';
+                emailSelect.value = email;
+            });
+        })();
+    </script>
 }

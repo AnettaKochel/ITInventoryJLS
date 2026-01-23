@@ -25,6 +25,13 @@ namespace ITInventoryJLS.Pages.Computers
         public List<SelectListItem> LocationOptions { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> EmployeeOptions { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> EmployeeEmailOptions { get; set; } = new List<SelectListItem>();
+        public List<SimpleEmployee> EmployeePairs { get; set; } = new List<SimpleEmployee>();
+
+        public class SimpleEmployee
+        {
+            public string FullName { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -53,6 +60,11 @@ namespace ITInventoryJLS.Pages.Computers
                 .Select(e => new SelectListItem { Value = e.Email, Text = e.Email })
                 .ToListAsync();
 
+            EmployeePairs = await _context.Employees
+                .AsNoTracking()
+                .Select(e => new SimpleEmployee { FullName = e.FullName, Email = e.Email })
+                .ToListAsync();
+
             return Page();
         }
 
@@ -73,6 +85,10 @@ namespace ITInventoryJLS.Pages.Computers
                     .AsNoTracking()
                     .OrderBy(e => e.Email)
                     .Select(e => new SelectListItem { Value = e.Email, Text = e.Email })
+                    .ToListAsync();
+                EmployeePairs = await _context.Employees
+                    .AsNoTracking()
+                    .Select(e => new SimpleEmployee { FullName = e.FullName, Email = e.Email })
                     .ToListAsync();
                 return Page();
             }
@@ -95,6 +111,10 @@ namespace ITInventoryJLS.Pages.Computers
                     .AsNoTracking()
                     .OrderBy(e => e.Email)
                     .Select(e => new SelectListItem { Value = e.Email, Text = e.Email })
+                    .ToListAsync();
+                EmployeePairs = await _context.Employees
+                    .AsNoTracking()
+                    .Select(e => new SimpleEmployee { FullName = e.FullName, Email = e.Email })
                     .ToListAsync();
                 return Page();
             }

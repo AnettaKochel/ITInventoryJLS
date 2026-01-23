@@ -45,14 +45,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark px-2" asp-area="" asp-page="/AuditLogs/Index">Audit Logs</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark px-2" asp-area="" asp-page="/SQLQuery/Index">SQL Query</a>
-                        </li>
+                        <!-- SQL Query page removed -->
                         @* Show Admin menu only to users in Admin role *@
                         @{
                             var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-                            var isAdmin = isAuthenticated && User.IsInRole("Admin");
-                            var isStandard = isAuthenticated && (User.IsInRole("StandardUser") || (User.FindFirst("UserRights")?.Value ?? "").Split(',').Select(s => s.Trim()).Contains("StandardUser"));
+                            var isAdmin = isAuthenticated && (User?.IsInRole("Admin") ?? false);
+                            var isStandard = isAuthenticated && ((User?.IsInRole("StandardUser") ?? false) || ((User?.FindFirst("UserRights")?.Value ?? "").Split(',').Select(s => s.Trim()).Contains("StandardUser")));
                         }
 
                         @if (isAuthenticated && isAdmin && !isStandard)

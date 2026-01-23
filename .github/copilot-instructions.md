@@ -1,46 +1,51 @@
 <!-- Copilot instructions for AI coding agents working on ITInventoryJLS -->
 # Copilot instructions — ITInventoryJLS
+```markdown
+# Copilot instructions — ITInventoryJLS
 
-Purpose: provide short, actionable guidance so an AI coding agent is productive quickly in this Razor Pages + EF Core project.
+Purpose: concise, repo-specific guidance so AI coding agents are productive in this ASP.NET Core Razor Pages + EF Core app.
 
-- **Project type:** ASP.NET Core Razor Pages (net8.0). See [Program.cs](Program.cs) for service registration.
-- **Data access:** EF Core `AppDbContext` registered in `Program.cs` using SQL Server. See [Data/AppDbContext.cs](Data/AppDbContext.cs).
-- **Connection string:** stored in [appsettings.json](appsettings.json) under `ConnectionStrings:DefaultConnection`.
+## Project summary
+- Framework: ASP.NET Core Razor Pages targeting .NET 8 (see `ITInventoryJLS/Program.cs`).
+- Data: EF Core `AppDbContext` (SQL Server) configured from `appsettings.json` `ConnectionStrings:DefaultConnection`.
+- Auth: Cookie authentication (`ITInventoryAuth`) with 8-hour sliding expiration. Pages default to RequireAuthenticatedUser; anonymous pages are explicitly allowed in `Program.cs`.
+- Audit: `AppDbContext` overrides `SaveChanges`/`SaveChangesAsync` to capture AuditLog entries (Old/New values, who changed them). Middleware sets `AppDbContext.CurrentUser` from the authenticated user.
 
-Key patterns and conventions
-- Pages are organized by entity under `Pages/` (example: `Pages/Computers/` contains `Index`, `Create`, `Edit`). Follow the existing PageModel + Razor file pairing pattern when adding features.
-- Models live in `Models/` and use data annotations (`[Required]`, `StringLength`, `[Key]`, `EmailAddress`). Use the same attribute-based validation style.
-- `DbSet` properties in `AppDbContext` are singular model types with plural property names (e.g., `public DbSet<Computer> Computers { get; set; }`).
-- Dates use `DateOnly` in models (be careful when seeding/test data and serializing).
+## Key files and locations
+- `ITInventoryJLS/Program.cs` — startup, DI, cookie auth, security headers, middleware that populates `AppDbContext.CurrentUser`.
+- `ITInventoryJLS/Data/AppDbContext.cs` — DbSets (Products, Computers, DBUsers, AuditLogs), audit implementation and temporary property handling.
+- `ITInventoryJLS/Services/PasswordHasher.cs` — PBKDF2 (HMACSHA256) at 100,000 iterations; used for DB user password hashing and verification.
+- `ITInventoryJLS/Pages/` — Razor Pages organized per entity (e.g., `Pages/Computers/`), with `.cshtml` + `.cshtml.cs` pairing.
+- `ITInventoryJLS/Migrations/` — EF migrations when present; review before adding new migrations.
+- `Tools/` — small command-line helpers (e.g., `MigratePlaintextPasswords`) useful for bulk data operations.
 
-Build / run / debug
-- Build: `dotnet build` (root). Run locally: `dotnet run --project ITInventoryJLS.csproj` or use the profile urls in `Properties/launchSettings.json`.
-- For iterative development: `dotnet watch run` (install `dotnet-watch` if not present).
-- To attach a debugger: run the project with the `https` profile from `launchSettings.json` or launch from the IDE.
+## Commands and workflows
+- Build: run from workspace root or project folder: `dotnet build ITInventoryJLS/ITInventoryJLS.csproj` or from inside `ITInventoryJLS` run `dotnet build`.
+- Run locally: `dotnet run --project ITInventoryJLS/ITInventoryJLS.csproj` or `cd ITInventoryJLS && dotnet run`.
+- Tests: `dotnet test ITInventoryJLS.Tests/ITInventoryJLS.Tests.csproj`.
+- EF Core (from workspace root):
+  - Install tools: `dotnet tool install --global dotnet-ef`
+  - Add migration: `dotnet ef migrations add <Name> --project ITInventoryJLS/ITInventoryJLS.csproj --startup-project ITInventoryJLS/ITInventoryJLS.csproj`
+  - Apply migrations: `dotnet ef database update --project ITInventoryJLS/ITInventoryJLS.csproj --startup-project ITInventoryJLS/ITInventoryJLS.csproj`
 
-Database and migrations
-- No Migrations folder is committed. To manage schema use EF tools:
-  - `dotnet tool install --global dotnet-ef`
-  - `dotnet ef migrations add Initial --project ITInventoryJLS.csproj --startup-project ITInventoryJLS.csproj`
-  - `dotnet ef database update --project ITInventoryJLS.csproj --startup-project ITInventoryJLS.csproj`
-- Always check `appsettings.json` for the `DefaultConnection` before running migrations.
+## Important repo-specific conventions
+- Razor Page pattern: New features should add a folder under `Pages/<Feature>/` with `Index.cshtml`, `Create.cshtml`, `Edit.cshtml` and matching `*.cshtml.cs` PageModel classes.
+- Data annotations are used for validation on models in `Models/` (follow existing `[Required]`, `[StringLength]`, `[EmailAddress]`).
+- When updating models that affect the DB schema, create EF migrations and confirm `Migrations/` contents are correct before committing.
+- Password handling: use `Services/PasswordHasher` for creating/verifying password hashes. The stored DB fields are base64-encoded salt and hash (no iteration metadata stored currently).
 
-Security & risky code patterns
-- The project previously included an ad-hoc SQL query tool under `Pages/SqlQuery`. That tool has been removed — avoid adding similar functionality because it can enable data exfiltration and risks SQL injection. If a read-only query utility is required, gate it with `Admin` role, run it under least-privileged credentials, and thoroughly limit queries and results.
+## Security notes and guardrails
+- Do not add ad-hoc SQL execution endpoints (see prior `Pages/SqlQuery` history). If an admin query tool is necessary, restrict it to Admin-only pages, sanitize/limit queries, or run as maintenance scripts only.
+- Cookie settings use `CookieSecurePolicy.Always` and `HttpOnly`; preserve these defaults when changing auth behavior.
 
-Code changes guidance
-- Preserve Razor Pages structure: add a PageModel class co-located with its `.cshtml` file under `Pages/<Entity>/`.
-- When adding a model field, mirror data-annotation validation in the corresponding Create/Edit pages and View templates.
-- Keep UI assets in `wwwroot/` and use the existing `lib/` packages (Bootstrap, jQuery). Add new static files under `wwwroot/js` or `wwwroot/css`.
+## Examples (concrete references)
+- Capture current user in middleware: inspect the middleware block in `Program.cs` that sets `db.CurrentUser`.
+- Audit behavior: see `OnBeforeSaveChanges()` and `OnAfterSaveChanges()` in `Data/AppDbContext.cs` for how Old/New values and temporary PKs are handled.
+- Password hashing usage: `Services/PasswordHasher.CreateHash(...)` and `Verify(...)`.
 
-Files worth reading first
-- [Program.cs](Program.cs) — app startup and DI.
-- [Data/AppDbContext.cs](Data/AppDbContext.cs) — DbSets and DB access surface.
-- [Pages/Shared/_Layout.cshtml](Pages/Shared/_Layout.cshtml) — navigation and common UI layout.
-- `Pages/<Entity>/Index.cshtml.cs` (e.g., `Pages/Computers/Index.cshtml.cs`) — representative CRUD pattern.
+## When to ask the human
+- Any change that touches DB schema (ask whether to add a migration and run it).
+- Any change that exposes new query execution from UI (ask about security and intended audience).
 
-When making changes, ask the user if:
-- a migration should be created and applied to the shared development database;
-- the `DefaultConnection` should be updated for CI or environment-specific testing.
-
-If anything is unclear, ask for the exact desired behavior and whether the change should include schema migrations and UI updates.
+If something seems ambiguous, request the exact intended user-visible behavior, whether a DB migration is expected, and if the change should include UI updates or tests.
+```

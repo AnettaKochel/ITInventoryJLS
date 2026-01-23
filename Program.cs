@@ -1,13 +1,56 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using System.Threading.RateLimiting;
 using System;
 using ITInventoryJLS.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure forwarded headers to correctly capture client IPs when behind a proxy/load balancer.
+// IMPORTANT: set KnownProxies or KnownNetworks in production to avoid IP spoofing.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+    // Load known proxies from configuration (appsettings.json)
+    try
+    {
+        var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+        if (knownProxies != null)
+        {
+            foreach (var p in knownProxies)
+            {
+                if (System.Net.IPAddress.TryParse(p, out var ip))
+                {
+                    options.KnownProxies.Add(ip);
+                }
+            }
+        }
+
+        var knownNetworks = builder.Configuration.GetSection("ForwardedHeaders:KnownNetworks").Get<string[]>();
+        if (knownNetworks != null)
+        {
+            foreach (var n in knownNetworks)
+            {
+                // Expect CIDR like "10.0.0.0/24"
+                var parts = n?.Split('/');
+                if (parts != null && parts.Length == 2 && System.Net.IPAddress.TryParse(parts[0], out var networkIp) && int.TryParse(parts[1], out var prefix))
+                {
+                    options.KnownNetworks.Add(new IPNetwork(networkIp, prefix));
+                }
+            }
+        }
+    }
+    catch
+    {
+        // If config is malformed, fall back to no trusted proxies to avoid spoofing
+    }
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
@@ -45,6 +88,41 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
     
+// Rate limiting: per-IP partitioning with a stricter limit on the login endpoint
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "anon";
+        // Stricter limits for the login page
+        if (httpContext.Request.Path.StartsWithSegments("/Account/Login", StringComparison.OrdinalIgnoreCase))
+        {
+            return RateLimitPartition.GetFixedWindowLimiter(ip + ":login", _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            });
+        }
+
+        // General per-IP limit
+        return RateLimitPartition.GetFixedWindowLimiter(ip + ":general", _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 100,
+            Window = TimeSpan.FromMinutes(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0
+        });
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.Headers["Retry-After"] = "60";
+        await context.HttpContext.Response.WriteAsync("Too many requests. Try again later.", token);
+    };
+});
 
 var app = builder.Build();
 
@@ -62,8 +140,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Important: Forwarded headers must run before other middleware that consumes client IP.
+app.UseForwardedHeaders();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Enable rate limiting middleware
+app.UseRateLimiter();
 
 // Security headers: set a conservative baseline to reduce information leakage and clickjacking.
 app.Use(async (context, next) =>

@@ -24,6 +24,12 @@ namespace ITInventoryJLS.Models
 
         public bool IsActive { get; set; } = true;
 
+        // Account lockout / brute-force protection
+        public int FailedLoginCount { get; set; } = 0;
+
+        // When set to a future UTC time the account is locked until that time
+        public DateTimeOffset? LockoutEnd { get; set; }
+
         [Required, StringLength(50)]
         public string UserRights { get; set; } = string.Empty;  
     }

@@ -85,7 +85,7 @@ namespace ITInventoryJLS.Data
                         }
                         else
                         {
-                            auditEntry.KeyValues[propName] = prop.CurrentValue;
+                            auditEntry.KeyValues[propName] = RedactValue(propName, prop.CurrentValue);
                         }
                         continue;
                     }
@@ -93,10 +93,10 @@ namespace ITInventoryJLS.Data
                     switch (entry.State)
                     {
                         case EntityState.Added:
-                            auditEntry.NewValues[propName] = prop.CurrentValue;
+                            auditEntry.NewValues[propName] = RedactValue(propName, prop.CurrentValue);
                             break;
                         case EntityState.Deleted:
-                            auditEntry.OldValues[propName] = prop.OriginalValue;
+                            auditEntry.OldValues[propName] = RedactValue(propName, prop.OriginalValue);
                             break;
                         case EntityState.Modified:
                             // Detect changes either by IsModified or value difference
@@ -109,8 +109,8 @@ namespace ITInventoryJLS.Data
                                     dbOld = databaseValues[propName];
                                 }
 
-                                auditEntry.OldValues[propName] = dbOld ?? prop.OriginalValue;
-                                auditEntry.NewValues[propName] = prop.CurrentValue;
+                                auditEntry.OldValues[propName] = RedactValue(propName, dbOld ?? prop.OriginalValue);
+                                auditEntry.NewValues[propName] = RedactValue(propName, prop.CurrentValue);
                             }
                             break;
                     }
@@ -143,7 +143,7 @@ namespace ITInventoryJLS.Data
                 {
                     if (prop.Metadata.IsPrimaryKey())
                     {
-                        auditEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue;
+                        auditEntry.KeyValues[prop.Metadata.Name] = RedactValue(prop.Metadata.Name, prop.CurrentValue);
                     }
                 }
 
@@ -189,6 +189,26 @@ namespace ITInventoryJLS.Data
                     NewValues = NewValues.Count == 0 ? null : JsonSerializer.Serialize(NewValues)
                 };
             }
+        }
+
+        // Redaction helpers to avoid storing sensitive values in audit logs
+        private static readonly string[] SensitiveSubstrings = new[] { "password", "salt", "hash", "secret", "token" };
+
+        private static bool IsSensitiveName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return false;
+            foreach (var sub in SensitiveSubstrings)
+            {
+                if (name.IndexOf(sub, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            }
+            return false;
+        }
+
+        private static object? RedactValue(string propName, object? value)
+        {
+            if (value == null) return null;
+            if (IsSensitiveName(propName)) return "[REDACTED]";
+            return value;
         }
     }
 }

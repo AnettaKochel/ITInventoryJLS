@@ -68,6 +68,10 @@ namespace ITInventoryJLS.Pages.Admin
             user.PasswordHash = hash;
             user.PasswordSalt = salt;
 
+            // Reset failed login / lockout state when admin sets a new password
+            user.FailedLoginCount = 0;
+            user.LockoutEnd = null;
+
             await _db.SaveChangesAsync();
 
             StatusMessage = $"Password updated for {user.EmailAddress}.";

@@ -7,6 +7,33 @@
 
 <h1>Waps</h1>
 
+<form method="get" class="mb-3 row g-2 align-items-end">
+    <div class="col-auto">
+        <label class="form-label">Device Name</label>
+        <input name="DeviceNameFilter" list="devnames" class="form-control" value="@(Model.DeviceNameFilter ?? "")" />
+        <datalist id="devnames">
+            @foreach (var d in Model.DeviceNameOptions)
+            {
+                <option value="@d.Value"></option>
+            }
+        </datalist>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Deployment Location</label>
+        <input name="DeploymentLocationFilter" list="locations" class="form-control" value="@(Model.DeploymentLocationFilter ?? "")" />
+        <datalist id="locations">
+            @foreach (var l in Model.DeploymentLocationOptions)
+            {
+                <option value="@l.Value"></option>
+            }
+        </datalist>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Filter</button>
+        <a asp-page="/Products/Index" class="btn btn-outline-secondary ms-2">Clear</a>
+    </div>
+</form>
+
 <a asp-page="/Products/Create" class="btn btn-primary mb-3">Add New</a>
 
 @if (Model.Waps.Count == 0)
@@ -19,9 +46,10 @@ else
         <thead>
             <tr>
                 <th>Id</th>
+                <th>DeviceName</th>
                 <th>SerialNumber</th>
                 <th>Manufacturer</th>
-				<th>Model</th>
+			<th>Model</th>
                 <th>Condition</th>
                 <th>DeploymentLocation</th>
                 <th>ReceivedDate</th>
@@ -35,9 +63,10 @@ else
         {
             <tr>
                 <td>@wap.Id</td>
+                <td>@wap.DeviceName</td>
                 <td>@wap.SerialNumber</td>
                 <td>@wap.Manufacturer</td>
-				<td>@wap.Model</td>
+			<td>@wap.Model</td>
                 <td>@wap.Condition</td>
                 <td>@wap.DeploymentLocation</td>
                 <td>@wap.ReceivedDate</td>

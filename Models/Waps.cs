@@ -21,6 +21,9 @@ namespace ITInventoryJLS.Models
         
         [Required, StringLength(100)]
         public string DeploymentLocation { get; set; } = string.Empty;
+
+        [Required, StringLength(50)]
+        public string DeviceName { get; set; } = string.Empty;
         
         public DateOnly ReceivedDate { get; set; }
 

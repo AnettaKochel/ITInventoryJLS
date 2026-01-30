@@ -73,8 +73,10 @@ else
                 <td>@wap.DeployedDate</td>
                 <td>@wap.EOL</td>
                 <td>
-                    <a asp-page="/Products/Edit" asp-route-id="@wap.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-page="/Products/Delete" asp-route-id="@wap.Id" class="btn btn-sm btn-danger ms-2">Delete</a>
+                    <div class="btn-group" role="group" aria-label="Actions">
+                        <a asp-page="/Products/Edit" asp-route-id="@wap.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="/Products/Delete" asp-route-id="@wap.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
                 </td>
             </tr>
         }

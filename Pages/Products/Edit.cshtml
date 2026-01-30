@@ -36,6 +36,12 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="Waps.DeviceName" class="form-label"></label>
+        <input asp-for="Waps.DeviceName" class="form-control" />
+        <span asp-validation-for="Waps.DeviceName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="Waps.DeploymentLocation" class="form-label"></label>
         <select asp-for="Waps.DeploymentLocation" class="form-control" asp-items="Model.LocationOptions">
             <option value="">-- Select location --</option>

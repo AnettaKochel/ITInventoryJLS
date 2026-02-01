@@ -7,6 +7,7 @@
 <h1>Locations</h1>
 
 <a asp-page="/Locations/Create" class="btn btn-primary mb-3">Add New</a>
+<a asp-page="/Locations/Index" asp-route-Export="csv" class="btn btn-outline-success mb-3 ms-2">Export CSV</a>
 
 @if (Model.Locations.Count == 0)
 {

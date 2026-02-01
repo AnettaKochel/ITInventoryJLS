@@ -28,12 +28,28 @@
         </select>
     </div>
     <div class="col-auto">
+        <label class="form-label">Deployment Location</label>
+        <select name="DeploymentLocationFilter" class="form-select">
+            <option value="">All</option>
+            @foreach (var d in Model.DeploymentLocationOptions)
+            {
+                <option value="@d.Value" selected="@(Model.DeploymentLocationFilter == d.Value ? "selected" : null)">@d.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
         <button class="btn btn-primary">Filter</button>
         <a asp-page="/Computers/Index" class="btn btn-outline-secondary ms-2">Clear</a>
     </div>
 </form>
 
 <a asp-page="/Computers/Create" class="btn btn-primary mb-3">Add New</a>
+<a asp-page="/Computers/Index" asp-route-Export="csv" asp-route-TypeFilter="@(Model.TypeFilter)" asp-route-OSFilter="@(Model.OSFilter)" asp-route-DeploymentLocationFilter="@(Model.DeploymentLocationFilter)" class="btn btn-outline-success mb-3 ms-2">Export CSV</a>
+
+@if (Model.IsFiltered)
+{
+    <p class="text-muted">Displaying @Model.Computers.Count out of @Model.TotalCount</p>
+}
 
 <!-- Column visibility controls -->
 <div class="mb-3">

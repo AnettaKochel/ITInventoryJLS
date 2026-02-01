@@ -36,6 +36,8 @@
 
 <a asp-page="/Products/Create" class="btn btn-primary mb-3">Add New</a>
 
+<p class="mb-3">Total Waps: @Model.Waps.Count</p>
+
 @if (Model.Waps.Count == 0)
 {
     <p>No Waps found.</p>

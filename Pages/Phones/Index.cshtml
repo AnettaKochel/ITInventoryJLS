@@ -7,7 +7,7 @@
 <h1>Phones</h1>
 
 <a asp-page="/Phones/Create" class="btn btn-primary mb-3">Add New</a>
-<a asp-page="./Index" asp-page-handler="ExportCsv" asp-route-ManufacturerFilter="@Model.ManufacturerFilter" class="btn btn-secondary mb-3 ms-2">Export CSV</a>
+<a asp-page="./Index" asp-page-handler="ExportCsv" asp-route-ManufacturerFilter="@Model.ManufacturerFilter" class="btn btn-outline-success mb-3 ms-2">Export CSV</a>
 
 @if (Model.Phones.Count == 0)
 {

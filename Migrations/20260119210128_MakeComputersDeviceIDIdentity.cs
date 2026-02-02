@@ -11,71 +11,63 @@ namespace ITInventoryJLS.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "DeviceName",
-                table: "Waps",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "");
+            // Add columns only if they don't already exist to make the migration idempotent
+            migrationBuilder.Sql(@"IF COL_LENGTH('Waps','DeviceName') IS NULL
+    BEGIN
+        ALTER TABLE [Waps] ADD [DeviceName] nvarchar(50) NOT NULL DEFAULT N'';
+    END");
 
-            migrationBuilder.AddColumn<string>(
-                name: "MACAddress",
-                table: "Waps",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "");
+            migrationBuilder.Sql(@"IF COL_LENGTH('Waps','MACAddress') IS NULL
+    BEGIN
+        ALTER TABLE [Waps] ADD [MACAddress] nvarchar(50) NOT NULL DEFAULT N'';
+    END");
 
-            migrationBuilder.CreateTable(
-                name: "Contracts",
-                columns: table => new
-                {
-                    ContractId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ContractUid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContractNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ContractName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ContractType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CounterpartyName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    BusinessOwner = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    AutoRenewal = table.Column<bool>(type: "bit", nullable: false),
-                    RenewalTermDetails = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    ContractValue = table.Column<decimal>(type: "decimal(19,4)", nullable: false),
-                    PaymentTerms = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    KeyObligations = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SLAPerformance = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TerminationNoticeDays = table.Column<short>(type: "smallint", nullable: false),
-                    RiskLevel = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    DataPrivacySecurity = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    LegalReviewer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DocumentLocation = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    DocVersion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SignatureDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ReviewDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    NextRenewalDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ReminderOwner = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ReminderSent = table.Column<bool>(type: "bit", nullable: false),
-                    BudgetCenter = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    GLCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PaymentFrequency = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PONumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SupplierCategory = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RelatedContracts = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    AmendmentCount = table.Column<int>(type: "int", nullable: false),
-                    InternalNotes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnersManagerApprover = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contracts", x => x.ContractId);
-                });
+            // Create Contracts table only if it doesn't already exist
+            migrationBuilder.Sql(@"IF OBJECT_ID('Contracts') IS NULL
+    BEGIN
+        CREATE TABLE [Contracts] (
+            [ContractId] int NOT NULL IDENTITY,
+            [ContractUid] uniqueidentifier NOT NULL,
+            [ContractNumber] nvarchar(50) NOT NULL,
+            [ContractName] nvarchar(200) NOT NULL,
+            [ContractType] nvarchar(50) NOT NULL,
+            [CounterpartyName] nvarchar(200) NOT NULL,
+            [BusinessOwner] nvarchar(100) NOT NULL,
+            [StartDate] date NOT NULL,
+            [EndDate] date NOT NULL,
+            [AutoRenewal] bit NOT NULL,
+            [RenewalTermDetails] nvarchar(200) NOT NULL,
+            [Status] nvarchar(30) NOT NULL,
+            [ContractValue] decimal(19,4) NOT NULL,
+            [PaymentTerms] nvarchar(50) NOT NULL,
+            [KeyObligations] nvarchar(max) NOT NULL,
+            [SLAPerformance] nvarchar(max) NOT NULL,
+            [TerminationNoticeDays] smallint NOT NULL,
+            [RiskLevel] nvarchar(10) NOT NULL,
+            [DataPrivacySecurity] nvarchar(200) NOT NULL,
+            [LegalReviewer] nvarchar(100) NOT NULL,
+            [DocumentLocation] nvarchar(400) NOT NULL,
+            [DocVersion] nvarchar(20) NOT NULL,
+            [LastUpdatedDate] datetime2 NOT NULL,
+            [SignatureDate] date NOT NULL,
+            [ReviewDate] date NOT NULL,
+            [NextRenewalDate] date NOT NULL,
+            [ReminderOwner] nvarchar(100) NOT NULL,
+            [ReminderSent] bit NOT NULL,
+            [BudgetCenter] nvarchar(50) NOT NULL,
+            [GLCode] nvarchar(50) NOT NULL,
+            [PaymentFrequency] nvarchar(20) NOT NULL,
+            [PONumber] nvarchar(50) NOT NULL,
+            [SupplierCategory] nvarchar(50) NOT NULL,
+            [RelatedContracts] nvarchar(200) NOT NULL,
+            [AmendmentCount] int NOT NULL,
+            [InternalNotes] nvarchar(max) NOT NULL,
+            [OwnersManagerApprover] nvarchar(100) NOT NULL,
+            [CreatedAtUtc] datetime2 NOT NULL,
+            [UpdatedAtUtc] datetime2 NOT NULL,
+            CONSTRAINT [PK_Contracts] PRIMARY KEY ([ContractId])
+        );
+    END");
         }
 
         /// <inheritdoc />

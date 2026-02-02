@@ -47,6 +47,10 @@ namespace ITInventoryJLS.Pages.Account
                 return Page();
             }
 
+            // Lockout policy
+            const int maxFailed = 5;
+            const int lockoutMinutes = 15;
+
             var user = await _db.DBUsers.FirstOrDefaultAsync(u => u.EmailAddress == Input.Email && u.IsActive);
 
             if (user == null)
@@ -55,9 +59,26 @@ namespace ITInventoryJLS.Pages.Account
                 return Page();
             }
 
+            // Check lockout
+            if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow)
+            {
+                ErrorMessage = $"Account locked until {user.LockoutEnd.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC.";
+                return Page();
+            }
+
             var verified = ITInventoryJLS.Services.PasswordHasher.Verify(Input.Password, user.PasswordHash, user.PasswordSalt);
             if (!verified)
             {
+                // Increment failed attempts and apply lockout if threshold reached
+                user.FailedLoginCount = (user.FailedLoginCount < 0 ? 0 : user.FailedLoginCount) + 1;
+                if (user.FailedLoginCount >= maxFailed)
+                {
+                    user.LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(lockoutMinutes);
+                    user.FailedLoginCount = 0; // reset after applying lockout
+                }
+
+                await _db.SaveChangesAsync();
+
                 ErrorMessage = "Invalid credentials or inactive account.";
                 return Page();
             }
@@ -78,6 +99,11 @@ namespace ITInventoryJLS.Pages.Account
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
             }
+
+            // Successful login: reset failed count and lockout
+            user.FailedLoginCount = 0;
+            user.LockoutEnd = null;
+            await _db.SaveChangesAsync();
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);

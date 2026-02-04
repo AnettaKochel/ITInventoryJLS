@@ -25,5 +25,8 @@ namespace ITInventoryJLS.Models
         [Required, StringLength(100)]
         public string DeploymentLocation { get; set; } = string.Empty;
         
+        [StringLength(100)]
+        public string UserAssigned { get; set; } = string.Empty;
+        
     }
 }

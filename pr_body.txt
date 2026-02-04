@@ -1,0 +1,7 @@
+Moves Audit Logs nav into Admin and restricts page to Admin role.
+
+Changes:
+- Updated Pages/Shared/_Layout.cshtml to move the link into the Admin dropdown.
+- Added [Authorize(Roles = "Admin")] to Pages/Admin/AuditLogs/Index.cshtml.cs.
+
+Build verified locally with dotnet build.

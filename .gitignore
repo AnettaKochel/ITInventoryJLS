@@ -15,8 +15,8 @@ obj/
 *.nupkg
 packages/
 
-# ASP.NET / app settings
-appsettings.Development.json
+# ASP.NET / app settings (keep committed templates, ignore local overrides)
+appsettings.Local.json
 appsettings.*.Local.json
 
 # Build outputs
@@ -27,7 +27,7 @@ appsettings.*.Local.json
 # Logs
 *.log
 
-# Rider, VS Code
+# VS Code
 .vscode/
 
 # Node
@@ -36,8 +36,12 @@ node_modules/
 # Ignore publish output
 publish/
 
-# JetBrains Rider
-.idea/
+# Database files
+*.mdf
+*.ldf
 
-# Migrations (if you prefer to exclude generated migrations, uncomment)
+# Secrets
+secrets.json
+
+# Migrations (keep migrations in repo)
 # Migrations/

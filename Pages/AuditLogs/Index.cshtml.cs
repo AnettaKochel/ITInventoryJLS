@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using ITInventoryJLS.Data;
 using ITInventoryJLS.Models;
 
-namespace ITInventoryJLS.Pages.Admin.AuditLogs
+namespace ITInventoryJLS.Pages.AuditLogs
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _context;
